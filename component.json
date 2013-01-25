@@ -1,0 +1,28 @@
+{
+  "name": "dial",
+  "description": "A UI dial component",
+  "version": "0.0.1",
+  "keywords" : [
+    "dial",
+    "knob",
+    "rotate",
+    "ui"
+  ],
+  "dependencies": {
+    "component/domify": "*",
+    "component/event": "*",
+    "component/emitter": "*",
+    "jsantell/rotate": "*",
+    "manuelstofer/each": "*"
+  },
+  "development": {
+  },
+  "scripts": [
+    "index.js",
+    "template.js"
+  ],
+  "styles": [
+    "dial.css"
+  ],
+  "license": "MIT"
+}

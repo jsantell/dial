@@ -287,8 +287,8 @@ function onMouseMove (e) {
 
   if (!dial) { return; }
 
-  var curPos = e.x;
   var options = dial.options;
+  var curPos = e.pageX;
   var lastPos = dial.pos !== undefined ? dial.pos : curPos;
 
   // Increase

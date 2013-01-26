@@ -1,4 +1,4 @@
-rotate
+dial
 ====
 
 A UI dial component for use with [component](https://github.com/component/component). Bind to an input field and turn it into a sleek dial.

@@ -3,6 +3,8 @@ rotate
 
 A UI dial component for use with [component](https://github.com/component/component). Bind to an input field and turn it into a sleek dial.
 
+[View Example](http://jsantell.github.com/dial)
+
 ## Installation
 
 ```
@@ -27,6 +29,26 @@ var dial = new Dial(input, {
 ### Dial#set(val)
 
 If `val` is within the allowed range, it is set on the input field and the dial is updated accordingly. A `change` event is fired with the `val` passed in as the only argument.
+
+### Dial#render()
+
+Reconstructs the dial's `el` property containing the dial element. Already called during instantiation.
+
+### Dial#bind()
+
+Binds events necessary for the dial -- also binds mouseup and mousemove to `document` if this is the first dial. Already called during instantiation.
+
+### Dial#unbind()
+
+Unbinds the events related to the dial.
+
+### Dial#hideInput()
+
+Hides the corresponding input field. Already called on instantiation.
+
+### Dial#showInput()
+
+Displays the corresponding input field. Called on destroy, or call it manually to display the element.
 
 ### Dial#destroy()
 

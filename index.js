@@ -42,6 +42,8 @@ function Dial (input, options) {
     options
   );
 
+  Emitter(this);
+
   this.value = this.options.value;
 
   this
@@ -53,12 +55,6 @@ function Dial (input, options) {
   this.input.parentNode.appendChild(this.el);
   this.rotate();
 }
-
-/**
- * Inherits from `Emitter.prototype`
- */
-
-Dial.prototype.__proto__ = Emitter.prototype;
 
 /**
  * Defaults for each dial.

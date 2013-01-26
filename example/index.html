@@ -1,42 +1,54 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <title>Dial - A UI dial component</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="../build/build.css" />
-    <link rel="stylesheet" href="../dial.css" />
+    <link rel="stylesheet" href="example.css" />
     <title></title>
   </head>
   <body>
     <script src="../build/build.js" type="text/javascript"></script>
     <div id="container">
+        <h1>Dial - A UI dial component</h1>
+        <a href="https://github.com/jsantell/dial" title="dial on github">on github</a><br />
+        <a href="http://component.jit.su/jsantell/dial" title="dial on component">on component.jit.su</a><br />
+        <a href="http://twitter.com/jsantell" title="jsantell on twitter">@jsantell</a>
         <div class="container">
-            <h3>0-100,64 (inc 4) config</h3>
+            <h4>min:0, max:100, start:64, inc:4 (config)</h4>
             <input id="dial1" type="text" />
-            <div id="feedback1"></div>
+            <div id="feedback1" class="feedback"></div>
         </div>
         <div class="container">
-            <h3>0-100,25, (inc 2.5) float, data-attr</h3>
+            <h4>min:0 max:100, start:25, inc:2.5, float (attr)</h4>
             <input id="dial2" type="text" data-min="0" data-max="100" value="25" data-float="true" data-increment="2.5" />
-            <div id="feedback2"></div>
+            <div id="feedback2" class="feedback"></div>
         </div>
         <div class="container">
-            <h3>-50-50,0, (inc 0.5) float, config</h3>
+            <h4>min:-50, max:50, start:0, inc:0.5, float (config)</h4>
             <input id="dial3" type="text" />
-            <div id="feedback3"></div>
+            <div id="feedback3" class="feedback"></div>
         </div>
         <div class="container">
-            <h3>0-10,5 float, defaults with attr float</h3>
+            <h4>min:0, max:10, start:5, float (attr/default)</h4>
             <input id="dial4" type="text" data-float="true"  />
-            <div id="feedback4"></div>
+            <div id="feedback4" class="feedback"></div>
+        </div>
+        <div class="container">
+            <h4>min:0, max:10, start:5 (default) show original input, sync rotate & val</h4>
+            <input id="dial5" type="text" />
+            <div id="feedback5" class="feedback"></div>
         </div>
     </div>
     <script>
         var Dial = require('dial');
+        var each = require('manuelstofer-each');
 
         var input1 = document.getElementById('dial1');
         var input2 = document.getElementById('dial2');
         var input3 = document.getElementById('dial3');
         var input4 = document.getElementById('dial4');
+        var input5 = document.getElementById('dial5');
 
         var dial1 = new Dial(input1, {
             min: 0,
@@ -54,23 +66,19 @@
             increment: 0.5
         });
         var dial4 = new Dial(input4);
+        var dial5 = new Dial(input5);
 
-        dial1.on('change', function (val) {
-            document.getElementById('feedback1').innerHTML = val;
-        });
+        dial5.showInput();
 
-        dial2.on('change', function (val) {
-            document.getElementById('feedback2').innerHTML = val;
-        });
-
-        dial3.on('change', function (val) {
-            document.getElementById('feedback3').innerHTML = val;
-        });
-
-        dial4.on('change', function (val) {
-            document.getElementById('feedback4').innerHTML = val;
+        // Bind change event to display in feedback els
+        each([dial1, dial2, dial3, dial4, dial5], function (dial, i) {
+            dial.on('change', function (val) {
+                document.getElementById('feedback' + (i+1)).innerHTML = val;
+            });
+            document.getElementById('feedback' + (i+1)).innerHTML = dial.value;
         });
 
     </script>
+    <a href="https://github.com/jsantell/dial"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
   </body>
 </html>

@@ -2,7 +2,7 @@
   "name": "dial",
   "author": "Jordan Santell",
   "description": "A UI dial component",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords" : [
     "dial",
     "knob",
@@ -14,10 +14,10 @@
     "component/event": "*",
     "component/emitter": "*",
     "gorillatron/extend": "*",
-    "jsantell/rotate": "*",
-    "manuelstofer/each": "*"
+    "jsantell/rotate": "*"
   },
   "development": {
+    "manuelstofer/each": "*"
   },
   "scripts": [
     "index.js",

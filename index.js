@@ -7,54 +7,97 @@ var
   events    = require('event'),
   domify    = require('domify'),
   rotate    = require('rotate'),
+  extend    = require('extend'),
   template  = require('./template');
+
+/**
+ * Expose `Dial`
+ */
 
 module.exports = Dial;
 
+/**
+ * A constructor for a Dial object,
+ * creating a radial UI dial controlling
+ * an input field
+ *
+ * Options
+ *
+ * - `min` minimum value
+ * - `max` maximum value
+ * - `float` boolean determing whether floats are allowed
+ * - `increment` value to increment by
+ * - `value` starting value
+ *
+ * @param {HTMLInputElement} input
+ * @param {Object} options
+ * @api public
+ */
+
 function Dial (input, options) {
   this.input = input;
-  this.options = optionsFromAttrs(this.input, options);
+  this.options = extend(false,
+    Dial.defaults,
+    optionsFromAttrs(this.input),
+    options
+  );
 
   this.value = this.options.value;
 
-  this.render();
-  this.bind();
-  this.hideInput();
-
-  Emitter(this);
+  this
+    .setDefaultIncrement()
+    .render()
+    .bind()
+    .hideInput();
 
   this.input.parentNode.appendChild(this.el);
   this.rotate();
 }
 
+/**
+ * Inherits from `Emitter.prototype`
+ */
+
+Dial.prototype.__proto__ = Emitter.prototype;
+
+/**
+ * Defaults for each dial.
+ * Increment is handled in setDefaultIncrement
+ */
+
 Dial.defaults = {
   min: 0,
   max: 10,
   value: 5,
-  float: false
+  float: false,
+  increment: null
 };
 
-Dial.defaults.floatIncrement = (function () {
-  var defaults = Dial.defaults;
-  return (defaults.max - defaults.min) / 1000;
-})();
+/**
+ * Creates the dial's `el` property
+ *
+ * @return {Dial}
+ * @api public
+ */
 
 Dial.prototype.render = function () {
   this.el = domify(template)[0];
   return this;
 };
 
+/**
+ * Binds mouse events for the dial element,
+ * and on document if not already bound
+ *
+ * @return {Dial}
+ * @api public
+ */
+
 Dial.prototype.bind = function () {
   var that = this;
 
-  events.bind(this.el, 'mousedown', function () {
-    onMouseDown.apply(that, arguments);
-  });
-
-  // TODO HOW TO UNBIND THIS?
-  events.bind(this.input, 'change', function () {
-    that.set(this.value);
-  });
+  events.bind(this.el, 'mousedown', mouseDownHandler);
+  events.bind(this.input, 'change', inputChangeHandler);
 
   // Bind mouseup and movemouse handlers
   // to document for better dragging
@@ -64,48 +107,183 @@ Dial.prototype.bind = function () {
 
     Dial.docEventsBound = true;
   }
+  
+  /**
+   * Unbinds dial's events, not on prototype
+   * due to unbinding event on input element in scope
+   *
+   * @return {Dial}
+   * @api public
+   */
+  
+  this.unbind = function () {
+    events.unbind(this.el, 'mousedown');
+    events.unbind(this.input, 'change', inputChangeHandler);
+    return this;
+  };
+
+  function mouseDownHandler () {
+    onMouseDown.apply(that, arguments);
+  }
+
+  function inputChangeHandler () {
+    that.set(this.value);
+  }
 
   return this;
 };
 
+/**
+ * Removes dial element, reveals original input element,
+ * unbinds dial events.
+ *
+ * @return {Dial}
+ * @api public
+ */
+
 Dial.prototype.destroy = function () {
   var parent = this.el.parentElement;
-  events.unbind(this.input, 'mousedown');
+  this.unbind();
   this.showInput();
   parent.removeChild(this.el);
   return this;
 };
 
+/**
+ * Sets the dial's value if in allowed range,
+ * rounds to integer if needed, updates the corresponding
+ * input element, rotates dial and fires a change event
+ *
+ * @param {Number} val
+ * @return {Dial}
+ * @api public
+ */
+
 Dial.prototype.set = function (val) {
   if (val < this.options.min || val > this.options.max) {
     return;
   }
+  if (!this.options.float) {
+    val = ~~val;
+  }
   this.input.value = val;
   this.value = val;
-  this.emit('change');
-  console.log('set: ' + val);
+  this.emit('change', val);
   this.rotate();
+  return this;
 };
 
+/**
+ * Rotates the dial el based off of current
+ * dial's value
+ *
+ * @return {Dial}
+ * @api public
+ */
+
 Dial.prototype.rotate = function () {
-  var MIN_DEG = 0;
   var MAX_DEG = 270;
-  var relative = (MAX_DEG / (this.options.max - this.options.min)) * this.value;
-  rotate(this.el, (relative - MAX_DEG) * -1);
-  console.log('rotating : ' + (relative - MAX_DEG) * -1);
+  var shift = 405;
+  var relative = (MAX_DEG / (this.options.max - this.options.min)) *
+    (this.value - this.options.min);
+  var degrees = relative - MAX_DEG + shift;
+
+  rotate(this.el, degrees);
+
+  return this;
 };
+
+/**
+ * Hides original input element
+ *
+ * @return this;
+ */
 
 Dial.prototype.hideInput = function () {
   this.originalDisplay = this.originalDisplay || this.input.style.display;
   this.input.style.display = 'none';
+  return this;
 };
+
+/**
+ * Shows original input element
+ *
+ * @return this;
+ */
 
 Dial.prototype.showInput = function () {
   this.input.style.display = this.originalDisplay;
+  return this;
 };
 
-function optionsFromAttrs (input, options) {
+/**
+ * If no increment specific in config or attributes,
+ * set an increment of a 1/25th of the allowable range.
+ * Round to integer if necessary.
+ *
+ * @return this
+ * @api public
+ */
+
+Dial.prototype.setDefaultIncrement = function () {
+  var options = this.options;
+  var increment;
+  if (!options.increment) {
+    increment = (options.max - options.min) / 25;
+    if (!options.float) {
+      increment = ~~increment || 1;
+    }
+    options.increment = increment;
+  }
+
+  return this;
+};
+
+/**
+ * Takes an input element and parses attributes
+ * and returns an object containing the attributes
+ * if not empty.
+ *
+ * @param {HTMLInputElement} input
+ * @return {Object}
+ * @api private
+ */
+
+function optionsFromAttrs (input) {
+  var options = {};
+  var min = parseFloatAttr(input, 'min');
+  var max = parseFloatAttr(input, 'max');
+  var value = parseFloatAttr(input, 'value');
+  var float = !!input.getAttribute('data-float');
+  var inc = parseFloatAttr(input, 'increment');
+
+  min   != undefined && (options.min       = min);
+  max   != undefined && (options.max       = max);
+  float != undefined && (options.float     = float);
+  inc   != undefined && (options.increment = inc);
+  value !== ''       && (options.value     = value);
+
   return options;
+}
+
+/**
+ * Parses an attribute on an element
+ * and returns as float if it exists
+ *
+ * @param {HTMLInputElement} el
+ * @param {String} attr
+ * @return {Mixed}
+ * @api private
+ */
+
+function parseFloatAttr (el, attr) {
+  var value = attr === 'value' ?
+    el.value :
+    el.getAttribute('data-' + attr);
+
+  value = value && parseFloat(value);
+
+  return value;
 }
 
 function onMouseMove (e) {
@@ -114,15 +292,15 @@ function onMouseMove (e) {
   if (!dial) { return; }
 
   var curPos = e.x;
+  var options = dial.options;
   var lastPos = dial.pos !== undefined ? dial.pos : curPos;
-  var sensitivity = 1;//dial.options.sensitivity;
 
   // Increase
-  if (curPos > lastPos + sensitivity) {
-    dial.set(dial.value + 1);
+  if (curPos > lastPos + 1) {
+    dial.set(dial.value + options.increment);
   // Decrease
-  } else if (curPos < lastPos - sensitivity) {
-    dial.set(dial.value - 1);
+  } else if (curPos < lastPos - 1) {
+    dial.set(dial.value - options.increment);
   }
 
   dial.pos = curPos;

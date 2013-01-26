@@ -1,5 +1,6 @@
 {
   "name": "dial",
+  "author": "Jordan Santell",
   "description": "A UI dial component",
   "version": "0.0.1",
   "keywords" : [
@@ -12,6 +13,7 @@
     "component/domify": "*",
     "component/event": "*",
     "component/emitter": "*",
+    "gorillatron/extend": "*",
     "jsantell/rotate": "*",
     "manuelstofer/each": "*"
   },
@@ -24,5 +26,7 @@
   "styles": [
     "dial.css"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repo": "jsantell/dial",
+  "twitter": "@jsantell"
 }

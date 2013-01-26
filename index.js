@@ -296,10 +296,10 @@ function onMouseMove (e) {
   var lastPos = dial.pos !== undefined ? dial.pos : curPos;
 
   // Increase
-  if (curPos > lastPos + 1) {
+  if (curPos > lastPos) {
     dial.set(dial.value + options.increment);
   // Decrease
-  } else if (curPos < lastPos - 1) {
+  } else if (curPos < lastPos) {
     dial.set(dial.value - options.increment);
   }
 

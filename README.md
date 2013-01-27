@@ -5,6 +5,8 @@ A UI dial component for use with [component](https://github.com/component/compon
 
 Tested in Chrome, Firefox, Safari, Opera, IE9+
 
+[Check out the related button component](https://jsantell.github.com/button)
+
 [View Example](http://jsantell.github.com/dial)
 
 ## Installation

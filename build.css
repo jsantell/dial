@@ -7,7 +7,19 @@
 .dial-container {
   width: 50px;
   height: 50px;
-  padding: 0px
+  padding: 0px;
+  cursor: pointer;
+  border-radius: 50%;
+  background: #eaeaea;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 -5px 5px rgba(100,100,100,0.1),
+    inset 0 5px 5px rgba(255,255,255,0.3)
+}
+
+.dial-container .dial-rotate {
+  width: 50px;
+  height: 50px
 }
 
 .dial-dial {

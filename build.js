@@ -759,7 +759,7 @@ Dial.prototype.rotate = function () {
     (this.value - this.options.min);
   var degrees = relative - MAX_DEG + shift;
 
-  rotate(this.el, degrees);
+  rotate(this.el.children[0], degrees);
 
   return this;
 };
@@ -890,8 +890,10 @@ function onMouseUp (e) {
 require.register("dial/template.js", function(module, exports, require){
 module.exports =
 '<div class="dial-container">' +
-  '<div class="dial-point"></div>' +
-  '<div class="dial-dial"></div>' +
+  '<div class="dial-rotate">' +
+    '<div class="dial-point"></div>' +
+    '<div class="dial-dial"></div>' +
+  '</div>' +
 '</div>';
 
 });

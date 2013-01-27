@@ -184,7 +184,7 @@ Dial.prototype.rotate = function () {
     (this.value - this.options.min);
   var degrees = relative - MAX_DEG + shift;
 
-  rotate(this.el, degrees);
+  rotate(this.el.children[0], degrees);
 
   return this;
 };

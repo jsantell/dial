@@ -2,7 +2,7 @@
   "name": "dial",
   "author": "Jordan Santell",
   "description": "A UI dial component",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "keywords" : [
     "dial",
     "knob",

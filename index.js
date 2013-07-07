@@ -77,7 +77,7 @@ Dial.defaults = {
  */
 
 Dial.prototype.render = function () {
-  this.el = domify(template)[0];
+  this.el = domify(template);
   return this;
 };
 

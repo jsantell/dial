@@ -2,7 +2,7 @@
   "name": "dial",
   "author": "Jordan Santell",
   "description": "A UI dial component",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "keywords" : [
     "dial",
     "knob",
@@ -10,7 +10,7 @@
     "ui"
   ],
   "dependencies": {
-    "component/domify": "*",
+    "component/domify": "1.0.0",
     "component/event": "*",
     "component/emitter": "*",
     "gorillatron/extend": "*",
